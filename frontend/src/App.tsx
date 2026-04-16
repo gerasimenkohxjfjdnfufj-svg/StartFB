@@ -1,0 +1,108 @@
+import { useState, useEffect, useRef } from 'react'
+import MapView from './components/map/MapView'
+import Sidebar from './components/layout/Sidebar'
+import type { ProfileType, RouteResult } from './types'
+import './App.css'
+
+export type { ProfileType, RouteResult }
+
+function useIsMobile() {
+  const [mobile, setMobile] = useState(() => window.innerWidth <= 768)
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)')
+    const handler = (e: MediaQueryListEvent) => setMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return mobile
+}
+
+function App() {
+  const [profile, setProfile]         = useState<ProfileType>('wheelchair')
+  const [theme, setTheme]             = useState<'dark' | 'light'>(() =>
+    (localStorage.getItem('dg_theme') as 'dark' | 'light') || 'dark'
+  )
+  const [route, setRoute]             = useState<RouteResult | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [sheetFull, setSheetFull]     = useState(false)
+  const [selectedCity, setSelectedCity] = useState<string>('')
+  const isMobile = useIsMobile()
+
+  // Touch drag for bottom sheet
+  const dragStartY  = useRef<number | null>(null)
+  const dragStartFull = useRef(false)
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('dg_theme', theme)
+  }, [theme])
+
+  // On desktop keep sidebar always open
+  useEffect(() => {
+    if (!isMobile) setSidebarOpen(true)
+  }, [isMobile])
+
+  const handleRouteBuilt = (r: RouteResult) => {
+    setRoute(r)
+    // Collapse sheet so map is visible after route is built
+    if (isMobile) setSheetFull(false)
+  }
+
+  const onSheetHandleTouchStart = (e: React.TouchEvent) => {
+    dragStartY.current = e.touches[0].clientY
+    dragStartFull.current = sheetFull
+  }
+  const onSheetHandleTouchEnd = (e: React.TouchEvent) => {
+    if (dragStartY.current === null) return
+    const dy = dragStartY.current - e.changedTouches[0].clientY
+    if (Math.abs(dy) > 30) {
+      setSheetFull(dy > 0) // swipe up = expand, swipe down = collapse
+    }
+    dragStartY.current = null
+  }
+
+  const sidebarClass = [
+    'sidebar',
+    !isMobile && sidebarOpen ? 'open' : '',
+    isMobile && sheetFull ? 'sheet-full' : '',
+  ].filter(Boolean).join(' ')
+
+  return (
+    <div className={`app ${theme}`}>
+
+      {/* Desktop hamburger */}
+      {!isMobile && (
+        <button className="menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Меню">
+          ☰
+        </button>
+      )}
+
+      <Sidebar
+        open={sidebarOpen}
+        sheetFull={sheetFull}
+        onSheetToggle={() => setSheetFull(f => !f)}
+        onSheetHandleTouchStart={onSheetHandleTouchStart}
+        onSheetHandleTouchEnd={onSheetHandleTouchEnd}
+        sidebarClass={sidebarClass}
+        isMobile={isMobile}
+        profile={profile}
+        onProfileChange={setProfile}
+        onRouteBuilt={handleRouteBuilt}
+        theme={theme}
+        onThemeToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+      />
+
+      <MapView
+        profile={profile}
+        route={route}
+        theme={theme}
+        onThemeToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+        selectedCity={selectedCity}
+        onCitySelected={setSelectedCity}
+        sheetFull={isMobile && sheetFull}
+      />
+    </div>
+  )
+}
+
+export default App
