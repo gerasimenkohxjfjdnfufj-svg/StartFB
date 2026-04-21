@@ -74,15 +74,24 @@ export default function AuthPage() {
 
         <form onSubmit={submit} style={styles.form}>
           {tab === 'register' && (
-            <input style={styles.input} type="text" placeholder="Ваше имя"
-              value={name} onChange={e => setName(e.target.value)} required />
+            <label style={styles.fieldWrap}>
+              <span style={styles.fieldLabel}>Ваше имя</span>
+              <input style={styles.input} type="text" placeholder="Иван Иванов"
+                value={name} onChange={e => setName(e.target.value)} required />
+            </label>
           )}
 
-          <input style={styles.input} type="email" placeholder="Email"
-            value={email} onChange={e => setEmail(e.target.value)} required />
+          <label style={styles.fieldWrap}>
+            <span style={styles.fieldLabel}>Email</span>
+            <input style={styles.input} type="email" placeholder="example@mail.ru"
+              value={email} onChange={e => setEmail(e.target.value)} required />
+          </label>
 
-          <input style={styles.input} type="password" placeholder="Пароль"
-            value={password} onChange={e => setPassword(e.target.value)} required />
+          <label style={styles.fieldWrap}>
+            <span style={styles.fieldLabel}>Пароль</span>
+            <input style={styles.input} type="password" placeholder="Минимум 8 символов"
+              value={password} onChange={e => setPassword(e.target.value)} required />
+          </label>
 
           {tab === 'register' && (
             <>
@@ -171,7 +180,7 @@ const styles: Record<string, React.CSSProperties> = {
   form: { display: 'flex', flexDirection: 'column', gap: 12 },
   input: {
     padding: '12px 14px', borderRadius: 10, border: '1px solid #333',
-    background: '#12121f', color: '#fff', fontSize: 15, outline: 'none',
+    background: '#12121f', color: '#fff', fontSize: 15, outline: 'none', width: '100%',
   },
   label: { color: '#aaa', fontSize: 13, marginTop: 4 },
   roleRow: { display: 'flex', gap: 10 },
@@ -199,4 +208,6 @@ const styles: Record<string, React.CSSProperties> = {
   },
   hint: { textAlign: 'center', marginTop: 16, color: '#666', fontSize: 13 },
   link: { color: '#2d6ae0', cursor: 'pointer' },
+  fieldWrap: { display: 'flex', flexDirection: 'column', gap: 5 },
+  fieldLabel: { color: '#aaa', fontSize: 12, fontWeight: 500, letterSpacing: '0.02em' },
 }
