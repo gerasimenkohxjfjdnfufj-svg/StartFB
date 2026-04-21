@@ -153,7 +153,7 @@ export default function AuthPage() {
 const styles: Record<string, React.CSSProperties> = {
   overlay: {
     position: 'fixed', inset: 0,
-    background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
+    background: '#0F1217',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     padding: 16, zIndex: 1000,
   },
@@ -173,8 +173,9 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex', background: '#12121f', borderRadius: 10, padding: 4, marginBottom: 24,
   },
   tab: {
-    flex: 1, padding: '10px 0', border: 'none', background: 'transparent',
+    flex: 1, padding: '12px 0', border: 'none', background: 'transparent',
     color: '#888', borderRadius: 8, cursor: 'pointer', fontSize: 14, fontWeight: 500,
+    minHeight: 44,
   },
   tabActive: { background: '#2d6ae0', color: '#fff' },
   form: { display: 'flex', flexDirection: 'column', gap: 12 },
