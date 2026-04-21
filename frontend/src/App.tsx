@@ -20,13 +20,12 @@ function useIsMobile() {
 }
 
 function App() {
-  const { user, logout } = useAuthStore()
+  const { user } = useAuthStore()
 
-  // Профиль берём из аккаунта пользователя, иначе дефолт
   const [profile, setProfile] = useState<ProfileType>(
     (user?.profile_type as ProfileType) ?? 'wheelchair'
   )
-  const [theme, setTheme]             = useState<'dark' | 'light'>(() =>
+  const [theme, setTheme] = useState<'dark' | 'light'>(() =>
     (localStorage.getItem('dg_theme') as 'dark' | 'light') || 'dark'
   )
   const [route, setRoute]             = useState<RouteResult | null>(null)
@@ -35,8 +34,12 @@ function App() {
   const [selectedCity, setSelectedCity] = useState<string>('')
   const isMobile = useIsMobile()
 
-  // Touch drag for bottom sheet
-  const dragStartY  = useRef<number | null>(null)
+  // Волонтёрский режим — ожидание клика на карту
+  const [volunteerMode, setVolunteerMode] = useState(false)
+  const [pendingVolunteerCoords, setPendingVolunteerCoords] = useState<{ lat: number; lng: number } | null>(null)
+  const [volunteerMarksKey, setVolunteerMarksKey] = useState(0)
+
+  const dragStartY    = useRef<number | null>(null)
   const dragStartFull = useRef(false)
 
   useEffect(() => {
@@ -44,14 +47,12 @@ function App() {
     localStorage.setItem('dg_theme', theme)
   }, [theme])
 
-  // On desktop keep sidebar always open
   useEffect(() => {
     if (!isMobile) setSidebarOpen(true)
   }, [isMobile])
 
   const handleRouteBuilt = (r: RouteResult) => {
     setRoute(r)
-    // Collapse sheet so map is visible after route is built
     if (isMobile) setSheetFull(false)
   }
 
@@ -62,9 +63,7 @@ function App() {
   const onSheetHandleTouchEnd = (e: React.TouchEvent) => {
     if (dragStartY.current === null) return
     const dy = dragStartY.current - e.changedTouches[0].clientY
-    if (Math.abs(dy) > 30) {
-      setSheetFull(dy > 0) // swipe up = expand, swipe down = collapse
-    }
+    if (Math.abs(dy) > 30) setSheetFull(dy > 0)
     dragStartY.current = null
   }
 
@@ -79,7 +78,6 @@ function App() {
   return (
     <div className={`app ${theme}`}>
 
-      {/* Desktop hamburger */}
       {!isMobile && (
         <button className="menu-toggle" onClick={() => setSidebarOpen(!sidebarOpen)} aria-label="Меню">
           ☰
@@ -99,6 +97,17 @@ function App() {
         onRouteBuilt={handleRouteBuilt}
         theme={theme}
         onThemeToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
+        volunteerMode={volunteerMode}
+        onVolunteerModeChange={(v) => {
+          setVolunteerMode(v)
+          if (!v) setPendingVolunteerCoords(null)
+        }}
+        pendingVolunteerCoords={pendingVolunteerCoords}
+        onVolunteerMarkCreated={() => {
+          setVolunteerMode(false)
+          setPendingVolunteerCoords(null)
+          setVolunteerMarksKey(k => k + 1) // перезагружаем метки на карте
+        }}
       />
 
       <MapView
@@ -109,6 +118,13 @@ function App() {
         selectedCity={selectedCity}
         onCitySelected={setSelectedCity}
         sheetFull={isMobile && sheetFull}
+        volunteerMode={volunteerMode}
+        onVolunteerMapClick={(coords) => {
+          setPendingVolunteerCoords(coords)
+          setVolunteerMode(false)
+          if (isMobile) setSheetFull(true) // раскрываем панель чтобы показать форму
+        }}
+        volunteerMarksKey={volunteerMarksKey}
       />
     </div>
   )

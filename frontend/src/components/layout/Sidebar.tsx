@@ -1,5 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import CityFilter from '../map/CityFilter'
+import VolunteerPanel from './VolunteerPanel'
 import type { ProfileType, RouteResult, BarrierType } from '../../types'
 import { routesApi, geoApi } from '../../services/api'
 import type { CityInfo } from '../map/CityFilter'
@@ -61,6 +62,10 @@ interface Props {
   onRouteBuilt: (r: RouteResult) => void
   theme: 'dark' | 'light'
   onThemeToggle: () => void
+  volunteerMode: boolean
+  onVolunteerModeChange: (v: boolean) => void
+  pendingVolunteerCoords: { lat: number; lng: number } | null
+  onVolunteerMarkCreated: () => void
 }
 
 const PROFILES: { id: ProfileType; icon: string; label: string; desc: string }[] = [
@@ -104,7 +109,9 @@ export default function Sidebar({
   onSheetHandleTouchStart, onSheetHandleTouchEnd,
   sidebarClass, isMobile,
   profile, onProfileChange, onRouteBuilt, theme, onThemeToggle,
+  volunteerMode, onVolunteerModeChange, pendingVolunteerCoords, onVolunteerMarkCreated,
 }: Props) {
+  const { user } = useAuthStore()
   const [selectedCity, setSelectedCity]       = useState('')
   const [cityInfo, setCityInfo]               = useState<CityInfo | null>(null)
   const fromField = useAddressInput(cityInfo)
@@ -252,6 +259,18 @@ export default function Sidebar({
         {/* City filter */}
         <CityFilter theme={theme} onCitySelected={(info) => { setSelectedCity(info.searchCity); setCityInfo(info) }} />
 
+        {/* ── Волонтёрская панель ── */}
+        {user?.role === 'volunteer' && (
+          <VolunteerPanel
+            pendingCoords={pendingVolunteerCoords}
+            onActivateMode={() => onVolunteerModeChange(true)}
+            onMarkCreated={onVolunteerMarkCreated}
+            onCancel={() => onVolunteerModeChange(false)}
+          />
+        )}
+
+        {/* ── Адреса (только не волонтёры) ── */}
+        {user?.role !== 'volunteer' && (<>
         {/* ── Адреса ── */}
         <div className="input-group">
           <div style={{ position: 'relative' }}>
@@ -383,15 +402,17 @@ export default function Sidebar({
         {/* ── Профили ── */}
         <div className="section-label">Профиль доступности</div>
         <div className="profile-grid">
-          {PROFILES.map(p => (
+          {(user?.profile_type ? PROFILES.filter(p => p.id === user.profile_type) : PROFILES).map(p => (
             <button key={p.id} className={`profile-btn ${profile === p.id ? 'active' : ''}`}
-              onClick={() => onProfileChange(p.id)}>
+              onClick={() => { if (!user?.profile_type) onProfileChange(p.id) }}
+              style={user?.profile_type ? { cursor: 'default', gridColumn: '1 / -1' } : {}}>
               <span className="p-icon">{p.icon}</span>
               <span className="p-name">{p.label}</span>
               <span className="p-desc">{p.desc}</span>
             </button>
           ))}
         </div>
+        </>)}
 
       </div>
     </aside>

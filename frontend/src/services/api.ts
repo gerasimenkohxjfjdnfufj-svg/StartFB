@@ -71,10 +71,17 @@ export const routesApi = {
 export const marksApi = {
   list: (bbox: { south: number; west: number; north: number; east: number }) =>
     api.get('/marks', { params: { ...bbox, limit: 200 } }),
-  create: (data: { lat: number; lng: number; category: string; type: string; comment?: string }) =>
+  create: (data: { lat: number; lng: number; category: string; type: string; comment?: string; photo_url?: string }) =>
     api.post('/marks', data),
   vote: (markId: string, vote: 'confirm' | 'deny') =>
     api.post(`/marks/${markId}/vote`, { vote }),
+  uploadPhoto: (file: File) => {
+    const form = new FormData()
+    form.append('file', file)
+    return api.post('/marks/upload-photo', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    })
+  },
 }
 
 // === GEO: поиск через Photon (photon.komoot.io) прямо из браузера ===

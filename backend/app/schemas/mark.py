@@ -9,6 +9,7 @@ class MarkCreate(BaseModel):
     category: MarkCategory
     type: str
     comment: Optional[str] = None
+    photo_url: Optional[str] = None
 
 
 class MarkResponse(BaseModel):
@@ -18,6 +19,7 @@ class MarkResponse(BaseModel):
     category: str
     type: str
     comment: Optional[str]
+    photo_url: Optional[str]
     votes: int
     source: str
 

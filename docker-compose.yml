@@ -34,6 +34,7 @@ services:
       - "8000"
     volumes:
       - ./backend:/app
+      - uploads_data:/app/uploads
     env_file:
       - .env
     depends_on:
@@ -126,6 +127,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  uploads_data:
 
 networks:
   app-net:

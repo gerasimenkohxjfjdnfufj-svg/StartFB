@@ -13,6 +13,9 @@ interface Props {
   selectedCity?: string
   onCitySelected?: (city: string) => void
   sheetFull?: boolean
+  volunteerMode?: boolean
+  onVolunteerMapClick?: (coords: { lat: number; lng: number }) => void
+  volunteerMarksKey?: number
 }
 
 const TILE_DARK  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
@@ -41,7 +44,7 @@ const MARK_STYLE: Record<string, { icon: string; color: string }> = {
   route:      { icon: '🗺️', color: '#4169E1' },
 }
 
-export default function MapView({ profile, route, theme, onThemeToggle, selectedCity, onCitySelected: _onCitySelected, sheetFull }: Props) {
+export default function MapView({ profile, route, theme, onThemeToggle, selectedCity, onCitySelected: _onCitySelected, sheetFull, volunteerMode, onVolunteerMapClick, volunteerMarksKey: _volunteerMarksKey }: Props) {
   const mapRef          = useRef<L.Map | null>(null)
   const tileRef         = useRef<L.TileLayer | null>(null)
   const routeLayerRef   = useRef<L.Polyline | null>(null)
@@ -172,6 +175,14 @@ export default function MapView({ profile, route, theme, onThemeToggle, selected
       console.warn('Ошибка геолокации:', e.message)
     })
 
+    // === Волонтёрский клик ===
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      // volunteerMode хранится в замыкании — читаем через ref
+      if ((mapRef.current as any)._volunteerMode) {
+        onVolunteerMapClick?.({ lat: e.latlng.lat, lng: e.latlng.lng })
+      }
+    })
+
     // === Долгое нажатие через Leaflet contextmenu ===
     // На мобиле contextmenu = долгий тап (Leaflet обрабатывает сам)
     // На десктопе = правая кнопка мыши
@@ -203,6 +214,14 @@ export default function MapView({ profile, route, theme, onThemeToggle, selected
       maxZoom: 20,
     }).addTo(mapRef.current)
   }, [theme])
+
+  // === Волонтёрский режим — курсор и флаг ===
+  useEffect(() => {
+    if (!mapRef.current) return
+    ;(mapRef.current as any)._volunteerMode = volunteerMode
+    const container = mapRef.current.getContainer()
+    container.style.cursor = volunteerMode ? 'crosshair' : ''
+  }, [volunteerMode])
 
   // === Маршрут и барьеры ===
   useEffect(() => {

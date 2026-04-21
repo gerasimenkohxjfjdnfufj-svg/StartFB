@@ -37,6 +37,7 @@ class MarkService:
             category=body.category,
             type=body.type,
             comment=body.comment,
+            photo_url=body.photo_url,
             source="user",
         )
         self.db.add(mark)
