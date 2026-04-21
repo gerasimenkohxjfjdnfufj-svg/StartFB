@@ -270,7 +270,8 @@ export default function Sidebar({
         )}
 
         {/* ── Адреса (только не волонтёры) ── */}
-        {user?.role !== 'volunteer' && (<>
+        {user?.role !== 'volunteer' && (
+        <div className="non-volunteer-section">
         {/* ── Адреса ── */}
         <div className="input-group">
           <div style={{ position: 'relative' }}>
@@ -412,7 +413,7 @@ export default function Sidebar({
             </button>
           ))}
         </div>
-        </>)}
+        </div>)}
 
       </div>
     </aside>

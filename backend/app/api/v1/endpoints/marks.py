@@ -15,7 +15,7 @@ MAX_SIZE = 10 * 1024 * 1024  # 10 MB
 router = APIRouter()
 
 
-@router.get("/", response_model=list[MarkResponse])
+@router.get("", response_model=list[MarkResponse])
 async def list_marks(
     south: float = Query(...),
     west: float  = Query(...),
@@ -31,7 +31,7 @@ async def list_marks(
     return await service.list_in_bbox(south, west, north, east, category, source, limit)
 
 
-@router.post("/", response_model=MarkResponse, status_code=201)
+@router.post("", response_model=MarkResponse, status_code=201)
 async def create_mark(
     body: MarkCreate,
     db: AsyncSession = Depends(get_db),

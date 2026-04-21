@@ -3,7 +3,7 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { ProfileType, RouteResult, BarrierType } from '../../types'
 import { marksStorage, UserMark } from '../../utils/storage'
-import { routesApi } from '../../services/api'
+import { routesApi, marksApi } from '../../services/api'
 
 interface Props {
   profile: ProfileType
@@ -44,12 +44,13 @@ const MARK_STYLE: Record<string, { icon: string; color: string }> = {
   route:      { icon: '🗺️', color: '#4169E1' },
 }
 
-export default function MapView({ profile, route, theme, onThemeToggle, selectedCity, onCitySelected: _onCitySelected, sheetFull, volunteerMode, onVolunteerMapClick, volunteerMarksKey: _volunteerMarksKey }: Props) {
+export default function MapView({ profile, route, theme, onThemeToggle, selectedCity, onCitySelected: _onCitySelected, sheetFull, volunteerMode, onVolunteerMapClick, volunteerMarksKey }: Props) {
   const mapRef          = useRef<L.Map | null>(null)
   const tileRef         = useRef<L.TileLayer | null>(null)
   const routeLayerRef   = useRef<L.Polyline | null>(null)
   const barrierLayerRef = useRef<L.LayerGroup | null>(null)
   const marksLayerRef   = useRef<L.LayerGroup | null>(null)
+  const serverMarksLayerRef = useRef<L.LayerGroup | null>(null)
   const legendRef       = useRef<HTMLDivElement | null>(null)
   const longPressTimer  = useRef<ReturnType<typeof setTimeout> | null>(null)
   const locationMarkerRef   = useRef<L.Marker | null>(null)
@@ -222,6 +223,70 @@ export default function MapView({ profile, route, theme, onThemeToggle, selected
     const container = mapRef.current.getContainer()
     container.style.cursor = volunteerMode ? 'crosshair' : ''
   }, [volunteerMode])
+
+  // === Загрузка волонтёрских меток с сервера ===
+  useEffect(() => {
+    const map = mapRef.current
+    if (!map) return
+
+    const loadServerMarks = async () => {
+      const bounds = map.getBounds()
+      try {
+        const res = await marksApi.list({
+          south: bounds.getSouth(),
+          west:  bounds.getWest(),
+          north: bounds.getNorth(),
+          east:  bounds.getEast(),
+        })
+        const marks: any[] = res.data
+
+        serverMarksLayerRef.current?.remove()
+        serverMarksLayerRef.current = L.layerGroup().addTo(map)
+
+        const OBSTACLE_ICONS: Record<string, string> = {
+          no_ramp:      '🚫',
+          broken_ramp:  '⚠️',
+          no_elevator:  '🛗',
+          narrow_path:  '↔️',
+          step:         '🪜',
+          blocked_path: '🚧',
+          bad_surface:  '🪨',
+          other:        '📌',
+        }
+
+        for (const mark of marks) {
+          const icon_str = OBSTACLE_ICONS[mark.type] ?? '📌'
+          const popupHtml = `
+            <div style="text-align:center;padding:8px;min-width:120px">
+              <div style="font-size:24px">${icon_str}</div>
+              <div style="font-weight:700;margin:4px 0;font-size:13px">${mark.type}</div>
+              ${mark.comment ? `<div style="font-size:12px;color:#888;margin-bottom:6px">${mark.comment}</div>` : ''}
+              ${mark.photo_url ? `<img src="${mark.photo_url}" style="width:100%;border-radius:6px;max-height:120px;object-fit:cover;margin-top:4px"/>` : ''}
+              <div style="font-size:11px;color:#aaa;margin-top:6px">👍 ${mark.votes ?? 0}</div>
+            </div>
+          `
+          L.marker([mark.lat, mark.lng], {
+            icon: L.divIcon({
+              className: '',
+              html: `<div style="font-size:22px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))">${icon_str}</div>`,
+              iconSize: [30, 30],
+              iconAnchor: [15, 15],
+            }),
+          })
+            .bindPopup(popupHtml, { maxWidth: 200 })
+            .addTo(serverMarksLayerRef.current!)
+        }
+      } catch {
+        // Тихо — нет меток или нет сети
+      }
+    }
+
+    loadServerMarks()
+    const handler = () => loadServerMarks()
+    map.on('moveend', handler)
+    return () => { map.off('moveend', handler) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [volunteerMarksKey])
 
   // === Маршрут и барьеры ===
   useEffect(() => {
