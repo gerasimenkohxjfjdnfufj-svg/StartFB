@@ -28,6 +28,11 @@ class Settings(BaseSettings):
     OVERPASS_URL: str = "https://overpass-api.de/api/interpreter"
     NOMINATIM_URL: str = "https://nominatim.openstreetmap.org"
 
+    # Admin account (создаётся автоматически при старте)
+    ADMIN_EMAIL: str = "admin@dostupny-gorod.ru"
+    ADMIN_PASSWORD: str = "Admin1234!"
+    ADMIN_NAME: str = "Администратор"
+
     # CORS
     ALLOWED_ORIGINS: List[str] = [
         "http://localhost",

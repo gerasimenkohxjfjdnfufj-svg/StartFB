@@ -7,6 +7,12 @@ from app.db.base import Base
 import enum
 
 
+class UserRole(str, enum.Enum):
+    user      = "user"
+    volunteer = "volunteer"
+    admin     = "admin"
+
+
 class ProfileType(str, enum.Enum):
     wheelchair = "wheelchair"
     visually   = "visually"
@@ -17,14 +23,15 @@ class ProfileType(str, enum.Enum):
 class User(Base):
     __tablename__ = "users"
 
-    id:            Mapped[uuid.UUID]  = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    email:         Mapped[str]        = mapped_column(String(255), unique=True, nullable=False, index=True)
-    password_hash: Mapped[str]        = mapped_column(String(255), nullable=False)
-    name:          Mapped[str]        = mapped_column(String(100), nullable=False)
-    profile_type:  Mapped[ProfileType]= mapped_column(SAEnum(ProfileType), default=ProfileType.wheelchair)
-    is_active:     Mapped[bool]       = mapped_column(Boolean, default=True)
-    created_at:    Mapped[datetime]   = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
-    last_login:    Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    id:            Mapped[uuid.UUID]        = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    email:         Mapped[str]              = mapped_column(String(255), unique=True, nullable=False, index=True)
+    password_hash: Mapped[str]              = mapped_column(String(255), nullable=False)
+    name:          Mapped[str]              = mapped_column(String(100), nullable=False)
+    role:          Mapped[UserRole]         = mapped_column(SAEnum(UserRole), default=UserRole.user)
+    profile_type:  Mapped[ProfileType | None] = mapped_column(SAEnum(ProfileType), nullable=True)
+    is_active:     Mapped[bool]             = mapped_column(Boolean, default=True)
+    created_at:    Mapped[datetime]         = mapped_column(DateTime(timezone=True), default=datetime.utcnow)
+    last_login:    Mapped[datetime | None]  = mapped_column(DateTime(timezone=True), nullable=True)
 
     # Связи
     routes:  Mapped[list["Route"]] = relationship("Route", back_populates="user")

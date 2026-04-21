@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import MapView from './components/map/MapView'
 import Sidebar from './components/layout/Sidebar'
+import AuthPage from './pages/AuthPage'
+import { useAuthStore } from './store/useAuthStore'
 import type { ProfileType, RouteResult } from './types'
 import './App.css'
 
@@ -18,7 +20,12 @@ function useIsMobile() {
 }
 
 function App() {
-  const [profile, setProfile]         = useState<ProfileType>('wheelchair')
+  const { user, logout } = useAuthStore()
+
+  // Профиль берём из аккаунта пользователя, иначе дефолт
+  const [profile, setProfile] = useState<ProfileType>(
+    (user?.profile_type as ProfileType) ?? 'wheelchair'
+  )
   const [theme, setTheme]             = useState<'dark' | 'light'>(() =>
     (localStorage.getItem('dg_theme') as 'dark' | 'light') || 'dark'
   )
@@ -66,6 +73,8 @@ function App() {
     !isMobile && sidebarOpen ? 'open' : '',
     isMobile && sheetFull ? 'sheet-full' : '',
   ].filter(Boolean).join(' ')
+
+  if (!user) return <AuthPage />
 
   return (
     <div className={`app ${theme}`}>

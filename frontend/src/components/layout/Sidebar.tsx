@@ -3,6 +3,7 @@ import CityFilter from '../map/CityFilter'
 import type { ProfileType, RouteResult, BarrierType } from '../../types'
 import { routesApi, geoApi } from '../../services/api'
 import type { CityInfo } from '../map/CityFilter'
+import { useAuthStore } from '../../store/useAuthStore'
 
 interface GeoSuggestion { lat: number; lng: number; display_name: string }
 
@@ -76,6 +77,26 @@ const BARRIER_INFO: Record<BarrierType, { icon: string; label: string }> = {
   crossing:    { icon: '🚶', label: 'Переход' },
   elevator:    { icon: '↕️', label: 'Лифт' },
   ramp:        { icon: '♿', label: 'Пандус' },
+}
+
+function UserBadge() {
+  const { user, logout } = useAuthStore()
+  if (!user) return null
+  const roleLabel = user.role === 'admin' ? 'Админ' : user.role === 'volunteer' ? 'Волонтёр' : 'Пользователь'
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0', fontSize: 13 }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {user.name}
+        </div>
+        <div style={{ opacity: 0.6, fontSize: 11 }}>{roleLabel}</div>
+      </div>
+      <button onClick={logout} title="Выйти"
+        style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 18, opacity: 0.7, padding: 4 }}>
+        🚪
+      </button>
+    </div>
+  )
 }
 
 export default function Sidebar({
@@ -222,6 +243,7 @@ export default function Sidebar({
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
           </div>
+          <UserBadge />
         </div>
       )}
 

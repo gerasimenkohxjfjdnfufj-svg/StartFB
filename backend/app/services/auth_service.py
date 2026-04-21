@@ -11,8 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.db.session import get_db
-from app.models.user import User
-from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse
+from app.models.user import User, UserRole
+from app.schemas.auth import RegisterRequest, LoginRequest, TokenResponse, UserResponse
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/v1/auth/login")
@@ -64,7 +64,8 @@ class AuthService:
             email=body.email,
             password_hash=self.hash_password(body.password),
             name=body.name,
-            profile_type=body.profile_type,
+            role=body.role,
+            profile_type=body.profile_type if body.role == UserRole.user else None,
         )
         self.db.add(user)
         await self.db.flush()
@@ -72,6 +73,7 @@ class AuthService:
         return TokenResponse(
             access_token=self.create_access_token(str(user.id)),
             refresh_token=self.create_refresh_token(str(user.id)),
+            user=UserResponse.model_validate(user),
         )
 
     # ── Вход ─────────────────────────────────────────────────
@@ -90,6 +92,7 @@ class AuthService:
         return TokenResponse(
             access_token=self.create_access_token(str(user.id)),
             refresh_token=self.create_refresh_token(str(user.id)),
+            user=UserResponse.model_validate(user),
         )
 
     # ── Обновление токена ────────────────────────────────────
@@ -102,9 +105,12 @@ class AuthService:
         except JWTError:
             raise HTTPException(status_code=401, detail="Токен недействителен")
 
+        result2 = await db.execute(select(User).where(User.id == uuid.UUID(user_id)))
+        user2 = result2.scalar_one_or_none()
         return TokenResponse(
             access_token=self.create_access_token(user_id),
             refresh_token=self.create_refresh_token(user_id),
+            user=UserResponse.model_validate(user2) if user2 else UserResponse(id=user_id, email="", name="", role="user"),
         )
 
     # ── Текущий пользователь (Dependency) ────────────────────
