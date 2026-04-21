@@ -4,6 +4,7 @@ import Sidebar from './components/layout/Sidebar'
 import AuthPage from './pages/AuthPage'
 import { useAuthStore } from './store/useAuthStore'
 import type { ProfileType, RouteResult } from './types'
+import type { CityInfo } from './components/map/CityFilter'
 import './App.css'
 
 export type { ProfileType, RouteResult }
@@ -31,7 +32,7 @@ function App() {
   const [route, setRoute]             = useState<RouteResult | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [sheetFull, setSheetFull]     = useState(false)
-  const [selectedCity, setSelectedCity] = useState<string>('')
+  const [selectedCityInfo, setSelectedCityInfo] = useState<CityInfo | null>(null)
   const isMobile = useIsMobile()
 
   // Волонтёрский режим — ожидание клика на карту
@@ -108,6 +109,7 @@ function App() {
           setPendingVolunteerCoords(null)
           setVolunteerMarksKey(k => k + 1) // перезагружаем метки на карте
         }}
+        onCitySelected={setSelectedCityInfo}
       />
 
       <MapView
@@ -115,8 +117,7 @@ function App() {
         route={route}
         theme={theme}
         onThemeToggle={() => setTheme(t => t === 'dark' ? 'light' : 'dark')}
-        selectedCity={selectedCity}
-        onCitySelected={setSelectedCity}
+        selectedCityInfo={selectedCityInfo}
         sheetFull={isMobile && sheetFull}
         volunteerMode={volunteerMode}
         onVolunteerMapClick={(coords) => {

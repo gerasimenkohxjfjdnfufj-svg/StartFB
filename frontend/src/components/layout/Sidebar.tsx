@@ -66,6 +66,7 @@ interface Props {
   onVolunteerModeChange: (v: boolean) => void
   pendingVolunteerCoords: { lat: number; lng: number } | null
   onVolunteerMarkCreated: () => void
+  onCitySelected?: (info: CityInfo) => void
 }
 
 const PROFILES: { id: ProfileType; icon: string; label: string; desc: string }[] = [
@@ -110,6 +111,7 @@ export default function Sidebar({
   sidebarClass, isMobile,
   profile, onProfileChange, onRouteBuilt, theme, onThemeToggle,
   volunteerMode, onVolunteerModeChange, pendingVolunteerCoords, onVolunteerMarkCreated,
+  onCitySelected,
 }: Props) {
   const { user } = useAuthStore()
   const [selectedCity, setSelectedCity]       = useState('')
@@ -257,7 +259,7 @@ export default function Sidebar({
       <div className="sidebar-body">
 
         {/* City filter */}
-        <CityFilter theme={theme} onCitySelected={(info) => { setSelectedCity(info.searchCity); setCityInfo(info) }} />
+        <CityFilter theme={theme} onCitySelected={(info) => { setSelectedCity(info.searchCity); setCityInfo(info); onCitySelected?.(info) }} />
 
         {/* ── Волонтёрская панель ── */}
         {user?.role === 'volunteer' && (

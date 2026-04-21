@@ -105,7 +105,7 @@ class AuthService:
         except JWTError:
             raise HTTPException(status_code=401, detail="Токен недействителен")
 
-        result2 = await db.execute(select(User).where(User.id == uuid.UUID(user_id)))
+        result2 = await self.db.execute(select(User).where(User.id == uuid.UUID(user_id)))
         user2 = result2.scalar_one_or_none()
         return TokenResponse(
             access_token=self.create_access_token(user_id),

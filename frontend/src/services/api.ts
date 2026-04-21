@@ -42,7 +42,7 @@ const createDebounce = (fn: DebouncedFn, delay: number) => {
 }
 
 export const authApi = {
-  register: (data: { email: string; password: string; name: string; profile_type: string }) =>
+  register: (data: { email: string; password: string; name: string; role: string; profile_type?: string }) =>
     api.post('/auth/register', data),
   login: (data: { email: string; password: string }) =>
     api.post('/auth/login', data),

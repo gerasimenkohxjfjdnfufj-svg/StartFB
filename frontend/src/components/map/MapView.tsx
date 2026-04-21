@@ -2,16 +2,25 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import type { ProfileType, RouteResult, BarrierType } from '../../types'
+import type { CityInfo } from './CityFilter'
 import { marksStorage, UserMark } from '../../utils/storage'
 import { routesApi, marksApi } from '../../services/api'
+
+function escHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
 
 interface Props {
   profile: ProfileType
   route: RouteResult | null
   theme: 'dark' | 'light'
   onThemeToggle?: () => void
-  selectedCity?: string
-  onCitySelected?: (city: string) => void
+  selectedCityInfo?: CityInfo | null
   sheetFull?: boolean
   volunteerMode?: boolean
   onVolunteerMapClick?: (coords: { lat: number; lng: number }) => void
@@ -44,7 +53,7 @@ const MARK_STYLE: Record<string, { icon: string; color: string }> = {
   route:      { icon: '🗺️', color: '#4169E1' },
 }
 
-export default function MapView({ profile, route, theme, onThemeToggle, selectedCity, onCitySelected: _onCitySelected, sheetFull, volunteerMode, onVolunteerMapClick, volunteerMarksKey }: Props) {
+export default function MapView({ profile, route, theme, onThemeToggle, selectedCityInfo, sheetFull, volunteerMode, onVolunteerMapClick, volunteerMarksKey }: Props) {
   const mapRef          = useRef<L.Map | null>(null)
   const tileRef         = useRef<L.TileLayer | null>(null)
   const routeLayerRef   = useRef<L.Polyline | null>(null)
@@ -205,6 +214,12 @@ export default function MapView({ profile, route, theme, onThemeToggle, selected
     }
   }, [])
 
+  // === Перелёт на выбранный город ===
+  useEffect(() => {
+    if (!mapRef.current || !selectedCityInfo) return
+    mapRef.current.setView(selectedCityInfo.coords, 12, { animate: true })
+  }, [selectedCityInfo])
+
   // === Смена темы ===
   useEffect(() => {
     if (!mapRef.current || !tileRef.current) return
@@ -259,9 +274,9 @@ export default function MapView({ profile, route, theme, onThemeToggle, selected
           const popupHtml = `
             <div style="text-align:center;padding:8px;min-width:120px">
               <div style="font-size:24px">${icon_str}</div>
-              <div style="font-weight:700;margin:4px 0;font-size:13px">${mark.type}</div>
-              ${mark.comment ? `<div style="font-size:12px;color:#888;margin-bottom:6px">${mark.comment}</div>` : ''}
-              ${mark.photo_url ? `<img src="${mark.photo_url}" style="width:100%;border-radius:6px;max-height:120px;object-fit:cover;margin-top:4px"/>` : ''}
+              <div style="font-weight:700;margin:4px 0;font-size:13px">${escHtml(String(mark.type))}</div>
+              ${mark.comment ? `<div style="font-size:12px;color:#888;margin-bottom:6px">${escHtml(mark.comment)}</div>` : ''}
+              ${mark.photo_url ? `<img src="${escHtml(mark.photo_url)}" style="width:100%;border-radius:6px;max-height:120px;object-fit:cover;margin-top:4px"/>` : ''}
               <div style="font-size:11px;color:#aaa;margin-top:6px">👍 ${mark.votes ?? 0}</div>
             </div>
           `
