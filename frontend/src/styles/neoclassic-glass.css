@@ -1,0 +1,703 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   NEOCLASSIC GLASS THEME
+   Мраморный храм из полупрозрачного жидкого стекла
+   Включить: добавить .style-neoclassic-glass на <body>
+   Отключить: убрать .style-neoclassic-glass с <body>
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500;600&display=swap');
+
+/* ── CSS Variables ──────────────────────────────────────────────────────── */
+.style-neoclassic-glass {
+  --ng-base:        rgba(255, 248, 240, 0.85);
+  --ng-glass:       rgba(255, 248, 235, 0.18);
+  --ng-glass-heavy: rgba(255, 248, 235, 0.82);
+  --ng-gold:        #d4af37;
+  --ng-gold-dim:    rgba(212, 175, 55, 0.7);
+  --ng-gold-light:  rgba(212, 175, 55, 0.3);
+  --ng-gold-glow:   rgba(212, 175, 55, 0.12);
+  --ng-shadow:      rgba(139, 69, 19, 0.15);
+  --ng-border:      rgba(212, 175, 55, 0.32);
+  --ng-blur:        20px;
+  --ng-radius:      14px;
+  --ng-trans:       0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  --ng-text-glow:   0 0 1px rgba(212, 175, 55, 0.35);
+  --ng-text:        #2c1810;
+  --ng-muted:       #7a5c3a;
+  --ng-green:       #2EC67A;
+  --ng-red:         #c0392b;
+}
+
+/* ── Animated Marble Background ─────────────────────────────────────────── */
+@keyframes ng-gradient-shift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes ng-ripple {
+  0%   { transform: scale(0); opacity: 0.8; }
+  100% { transform: scale(5); opacity: 0;   }
+}
+
+/* ── App Shell ───────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .app {
+  background: linear-gradient(
+    135deg,
+    #fafcff 0%,
+    #fff8f0 22%,
+    #f9f1e2 44%,
+    #fdf6e3 66%,
+    #fafcff 100%
+  ) !important;
+  background-size: 400% 400% !important;
+  animation: ng-gradient-shift 18s ease infinite !important;
+  color: var(--ng-text) !important;
+}
+
+/* ── Sidebar Panel ──────────────────────────────────────────────────────── */
+.style-neoclassic-glass .sidebar {
+  background: var(--ng-glass) !important;
+  backdrop-filter: blur(var(--ng-blur));
+  -webkit-backdrop-filter: blur(var(--ng-blur));
+  border-right: 1px solid var(--ng-border) !important;
+  box-shadow: 0 8px 32px var(--ng-gold-glow), 4px 0 24px var(--ng-shadow) !important;
+  position: relative;
+}
+
+/* Pilaster — vertical golden line on the right edge */
+.style-neoclassic-glass .sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; right: -1px;
+  width: 3px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--ng-gold-light) 8%,
+    var(--ng-gold) 50%,
+    var(--ng-gold-light) 92%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* Cornice — horizontal golden line at the top */
+.style-neoclassic-glass .sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--ng-gold-light) 8%,
+    var(--ng-gold) 50%,
+    var(--ng-gold-light) 92%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* ── Sidebar Header ─────────────────────────────────────────────────────── */
+.style-neoclassic-glass .sidebar-header {
+  background: linear-gradient(
+    135deg,
+    rgba(212, 175, 55, 0.07),
+    rgba(255, 248, 235, 0.1)
+  ) !important;
+  border-bottom: 1px solid var(--ng-border) !important;
+}
+
+/* ── Typography ─────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .logo-title {
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-shadow: var(--ng-text-glow);
+  color: var(--ng-text) !important;
+}
+
+.style-neoclassic-glass .logo-sub,
+.style-neoclassic-glass .section-label {
+  font-family: 'Cormorant Garamond', serif !important;
+  letter-spacing: 0.07em;
+  color: var(--ng-muted) !important;
+}
+
+.style-neoclassic-glass .p-name {
+  font-family: 'Playfair Display', serif !important;
+  letter-spacing: 0.02em;
+  color: var(--ng-text) !important;
+}
+
+.style-neoclassic-glass .p-desc,
+.style-neoclassic-glass .stat-lbl {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: var(--ng-muted) !important;
+}
+
+.style-neoclassic-glass .stat-val {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--ng-text) !important;
+  text-shadow: var(--ng-text-glow);
+}
+
+/* ── Logo Icon Glow ──────────────────────────────────────────────────────── */
+.style-neoclassic-glass .logo-icon {
+  filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.55));
+}
+
+/* ── Theme Toggle ────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .theme-toggle {
+  background: var(--ng-glass) !important;
+  border: 1px solid var(--ng-border) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px var(--ng-gold-glow);
+  color: var(--ng-text) !important;
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .theme-toggle:hover {
+  border-color: var(--ng-gold) !important;
+  box-shadow: 0 4px 18px var(--ng-gold-dim);
+}
+
+/* ── Profile Buttons ─────────────────────────────────────────────────────── */
+.style-neoclassic-glass .profile-btn {
+  background: var(--ng-glass) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--ng-border) !important;
+  border-radius: var(--ng-radius) !important;
+  box-shadow: 0 4px 16px var(--ng-gold-glow),
+              inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  color: var(--ng-text) !important;
+  transition: var(--ng-trans) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Inner glass highlight */
+.style-neoclassic-glass .profile-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 60%
+  );
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.style-neoclassic-glass .profile-btn:hover {
+  transform: translateY(-4px);
+  border-color: var(--ng-gold) !important;
+  box-shadow: 0 10px 36px var(--ng-gold-dim),
+              inset 0 1px 0 rgba(255,255,255,0.35) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+}
+
+.style-neoclassic-glass .profile-btn.active {
+  background: rgba(212, 175, 55, 0.14) !important;
+  border-color: var(--ng-gold) !important;
+  box-shadow: 0 4px 24px var(--ng-gold-dim),
+              inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+/* ── Input Wraps ─────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .input-wrap {
+  background: var(--ng-glass) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--ng-border) !important;
+  border-radius: var(--ng-radius) !important;
+  box-shadow: 0 2px 12px var(--ng-gold-glow),
+              inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .input-wrap:focus-within {
+  border-color: var(--ng-gold) !important;
+  box-shadow: 0 4px 22px var(--ng-gold-dim),
+              inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+.style-neoclassic-glass .input-wrap input {
+  background: transparent !important;
+  color: var(--ng-text) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 15px;
+}
+.style-neoclassic-glass .input-wrap input::placeholder {
+  color: var(--ng-muted) !important;
+  font-style: italic;
+}
+
+/* ── Swap Button ─────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .btn-swap {
+  background: var(--ng-glass) !important;
+  border: 1px solid var(--ng-border) !important;
+  color: var(--ng-muted) !important;
+  border-radius: var(--ng-radius) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-family: 'Cormorant Garamond', serif !important;
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .btn-swap:hover {
+  border-color: var(--ng-gold) !important;
+  color: var(--ng-text) !important;
+  box-shadow: 0 4px 16px var(--ng-gold-glow);
+}
+
+/* ── Mic Button ──────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .btn-mic {
+  color: var(--ng-muted) !important;
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .btn-mic:hover {
+  background: rgba(212, 175, 55, 0.12) !important;
+}
+
+/* ── Main CTA Button ─────────────────────────────────────────────────────── */
+.style-neoclassic-glass .btn-main {
+  background: linear-gradient(
+    135deg,
+    #b8920e 0%,
+    #d4af37 35%,
+    #e8c84a 65%,
+    #c9a120 100%
+  ) !important;
+  border: none !important;
+  border-radius: var(--ng-radius) !important;
+  color: #fff !important;
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 22px rgba(212, 175, 55, 0.42),
+              inset 0 1px 0 rgba(255,255,255,0.32) !important;
+  transition: var(--ng-trans) !important;
+  position: relative;
+  overflow: hidden;
+}
+.style-neoclassic-glass .btn-main:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 36px rgba(212, 175, 55, 0.58),
+              inset 0 1px 0 rgba(255,255,255,0.4) !important;
+}
+/* Gold ripple on click */
+.style-neoclassic-glass .btn-main:active:not(:disabled)::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 24px; height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  animation: ng-ripple 0.55s ease-out forwards;
+  pointer-events: none;
+}
+
+/* ── Route Info Card ─────────────────────────────────────────────────────── */
+.style-neoclassic-glass .route-info {
+  background: var(--ng-glass) !important;
+  backdrop-filter: blur(var(--ng-blur));
+  -webkit-backdrop-filter: blur(var(--ng-blur));
+  border: 1px solid var(--ng-border) !important;
+  border-radius: var(--ng-radius) !important;
+  box-shadow: 0 8px 32px var(--ng-gold-glow),
+              inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cornice stripe at top of route card */
+.style-neoclassic-glass .route-info::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 20px; right: 20px;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--ng-gold-light),
+    var(--ng-gold),
+    var(--ng-gold-light),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.style-neoclassic-glass .stat {
+  background: rgba(255, 248, 235, 0.45) !important;
+  border: 1px solid var(--ng-border);
+  border-radius: 10px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.32);
+}
+
+/* ── Suggestions Dropdown ────────────────────────────────────────────────── */
+.style-neoclassic-glass .suggestions {
+  background: rgba(255, 248, 235, 0.94) !important;
+  backdrop-filter: blur(var(--ng-blur));
+  -webkit-backdrop-filter: blur(var(--ng-blur));
+  border: 1px solid var(--ng-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px var(--ng-shadow) !important;
+}
+.style-neoclassic-glass .suggestion-item {
+  border-bottom-color: var(--ng-border) !important;
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .suggestion-item:hover {
+  background: rgba(212, 175, 55, 0.09) !important;
+}
+.style-neoclassic-glass .suggestion-text {
+  color: var(--ng-text) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+}
+
+/* ── Error Message ───────────────────────────────────────────────────────── */
+.style-neoclassic-glass .error-msg {
+  background: rgba(139, 30, 20, 0.07) !important;
+  border-color: rgba(180, 60, 40, 0.38) !important;
+  color: #7a1e14 !important;
+  border-radius: 10px !important;
+  font-family: 'Cormorant Garamond', serif !important;
+}
+
+/* ── Menu Toggle (desktop) ───────────────────────────────────────────────── */
+.style-neoclassic-glass .menu-toggle {
+  background: var(--ng-glass) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--ng-border) !important;
+  color: var(--ng-text) !important;
+  box-shadow: 0 4px 16px var(--ng-gold-glow);
+  transition: var(--ng-trans) !important;
+}
+
+/* ── Access Bar ──────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .access-bar-track {
+  background: rgba(212, 175, 55, 0.1) !important;
+  border: 1px solid var(--ng-border);
+}
+.style-neoclassic-glass .access-bar-label {
+  font-family: 'Cormorant Garamond', serif !important;
+  color: var(--ng-text) !important;
+}
+
+/* ── Focus Visible ───────────────────────────────────────────────────────── */
+.style-neoclassic-glass :focus-visible {
+  outline: 2px solid var(--ng-gold) !important;
+  outline-offset: 2px;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+.style-neoclassic-glass .sidebar-body::-webkit-scrollbar-thumb {
+  background: var(--ng-gold-light) !important;
+}
+
+/* ── Barrier Popup ───────────────────────────────────────────────────────── */
+.style-neoclassic-glass .barrier-popup-wrap .leaflet-popup-content-wrapper {
+  background: rgba(255, 248, 235, 0.94) !important;
+  border-color: var(--ng-border) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--ng-text) !important;
+}
+.style-neoclassic-glass .barrier-popup__label {
+  color: var(--ng-text) !important;
+  font-family: 'Playfair Display', serif !important;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   AUTH PAGE
+   Targeting auth-* classNames added to AuthPage.tsx
+   ════════════════════════════════════════════════════════════════════════════ */
+
+.style-neoclassic-glass .auth-overlay {
+  background: linear-gradient(
+    135deg,
+    #fafcff 0%,
+    #fff8f0 28%,
+    #f9f1e2 55%,
+    #fdf6e3 78%,
+    #fafcff 100%
+  ) !important;
+  background-size: 400% 400% !important;
+  animation: ng-gradient-shift 18s ease infinite !important;
+}
+
+.style-neoclassic-glass .auth-card {
+  background: rgba(255, 248, 235, 0.75) !important;
+  backdrop-filter: blur(var(--ng-blur));
+  -webkit-backdrop-filter: blur(var(--ng-blur));
+  border: 1px solid var(--ng-border) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 20px 60px var(--ng-shadow),
+              0 8px 32px var(--ng-gold-glow),
+              inset 0 1px 0 rgba(255,255,255,0.42) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cornice at top of auth card */
+.style-neoclassic-glass .auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--ng-gold-light) 12%,
+    var(--ng-gold) 50%,
+    var(--ng-gold-light) 88%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+/* Base cornice at bottom */
+.style-neoclassic-glass .auth-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--ng-gold-light) 12%,
+    var(--ng-gold) 50%,
+    var(--ng-gold-light) 88%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.style-neoclassic-glass .auth-logo-icon {
+  filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.6));
+}
+
+.style-neoclassic-glass .auth-logo-title {
+  font-family: 'Playfair Display', serif !important;
+  color: var(--ng-text) !important;
+  text-shadow: var(--ng-text-glow);
+}
+
+.style-neoclassic-glass .auth-logo-sub {
+  color: var(--ng-muted) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+}
+
+.style-neoclassic-glass .auth-tabs {
+  background: rgba(212, 175, 55, 0.05) !important;
+  border: 1px solid var(--ng-border);
+  border-radius: 12px !important;
+}
+
+.style-neoclassic-glass .auth-tab {
+  color: var(--ng-muted) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 15px !important;
+  border-radius: 8px !important;
+  transition: var(--ng-trans) !important;
+}
+
+.style-neoclassic-glass .auth-tab-active {
+  background: linear-gradient(
+    135deg,
+    #b8920e 0%,
+    #d4af37 50%,
+    #c9a120 100%
+  ) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 10px rgba(212, 175, 55, 0.42);
+}
+
+.style-neoclassic-glass .auth-field-label {
+  color: var(--ng-muted) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 12px !important;
+  letter-spacing: 0.04em;
+}
+
+.style-neoclassic-glass .auth-input {
+  background: rgba(255, 248, 235, 0.55) !important;
+  border: 1px solid var(--ng-border) !important;
+  border-radius: 10px !important;
+  color: var(--ng-text) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 15px !important;
+  transition: var(--ng-trans) !important;
+  outline: none !important;
+  width: 100%;
+  padding: 12px 14px;
+}
+.style-neoclassic-glass .auth-input:focus {
+  border-color: var(--ng-gold) !important;
+  background: rgba(255, 248, 235, 0.85) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14) !important;
+}
+.style-neoclassic-glass .auth-input::placeholder {
+  color: var(--ng-muted) !important;
+  font-style: italic;
+}
+
+.style-neoclassic-glass .auth-label {
+  color: var(--ng-muted) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 13px !important;
+}
+
+.style-neoclassic-glass .auth-role-btn {
+  background: var(--ng-glass) !important;
+  border: 1px solid var(--ng-border) !important;
+  color: var(--ng-text) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .auth-role-btn-active {
+  background: rgba(212, 175, 55, 0.14) !important;
+  border-color: var(--ng-gold) !important;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.3) !important;
+}
+
+.style-neoclassic-glass .auth-profile-btn {
+  background: var(--ng-glass) !important;
+  border: 1px solid var(--ng-border) !important;
+  color: var(--ng-text) !important;
+  border-radius: 12px !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .auth-profile-btn-active {
+  background: rgba(212, 175, 55, 0.14) !important;
+  border-color: var(--ng-gold) !important;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28) !important;
+}
+
+.style-neoclassic-glass .auth-error {
+  background: rgba(139, 30, 20, 0.07) !important;
+  color: #7a1e14 !important;
+  border-radius: 8px;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+}
+
+.style-neoclassic-glass .auth-submit-btn {
+  background: linear-gradient(
+    135deg,
+    #b8920e 0%,
+    #d4af37 40%,
+    #e8c84a 70%,
+    #c9a120 100%
+  ) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  font-family: 'Playfair Display', serif !important;
+  font-weight: 600;
+  font-size: 16px !important;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.44),
+              inset 0 1px 0 rgba(255,255,255,0.3) !important;
+  padding: 14px !important;
+  cursor: pointer !important;
+  position: relative;
+  overflow: hidden;
+  transition: var(--ng-trans) !important;
+}
+.style-neoclassic-glass .auth-submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.6),
+              inset 0 1px 0 rgba(255,255,255,0.4) !important;
+}
+.style-neoclassic-glass .auth-submit-btn:active:not(:disabled)::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 24px; height: 24px;
+  margin: -12px 0 0 -12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  animation: ng-ripple 0.55s ease-out forwards;
+  pointer-events: none;
+}
+
+.style-neoclassic-glass .auth-hint {
+  color: var(--ng-muted) !important;
+  font-family: 'Cormorant Garamond', serif !important;
+  font-size: 13px !important;
+  margin-top: 16px;
+  text-align: center;
+}
+
+.style-neoclassic-glass .auth-link {
+  color: var(--ng-gold) !important;
+  text-shadow: var(--ng-text-glow);
+  cursor: pointer;
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MOBILE — bottom sheet
+   ════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .style-neoclassic-glass .sidebar {
+    background: rgba(255, 248, 235, 0.9) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--ng-border) !important;
+    box-shadow: 0 -6px 36px var(--ng-shadow) !important;
+  }
+
+  /* Hide pilaster on mobile, show top cornice only */
+  .style-neoclassic-glass .sidebar::before {
+    display: none;
+  }
+  .style-neoclassic-glass .sidebar::after {
+    top: 0; bottom: auto;
+    height: 2px; width: 100%;
+    background: linear-gradient(
+      to right,
+      transparent 0%,
+      var(--ng-gold-light) 15%,
+      var(--ng-gold) 50%,
+      var(--ng-gold-light) 85%,
+      transparent 100%
+    );
+  }
+
+  /* No hover lift on touch */
+  .style-neoclassic-glass .profile-btn:hover {
+    transform: none;
+  }
+  .style-neoclassic-glass .btn-main:hover:not(:disabled) {
+    transform: none;
+  }
+  .style-neoclassic-glass .auth-submit-btn:hover:not(:disabled) {
+    transform: none;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION
+   ════════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .style-neoclassic-glass .app,
+  .style-neoclassic-glass .auth-overlay {
+    animation: none !important;
+    background: #fff8f0 !important;
+    background-size: auto !important;
+  }
+}

@@ -74,7 +74,7 @@ function App() {
     isMobile && sheetFull ? 'sheet-full' : '',
   ].filter(Boolean).join(' ')
 
-  if (!user) return <AuthPage />
+  if (!user) return <AuthPage theme={theme} setTheme={setTheme} />
 
   return (
     <div className={`app ${theme}`}>

@@ -1,0 +1,791 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   POLYGON GLASS THEME
+   "Жидкий стеклянный кристалл с полигональной геометрией"
+
+   Активация:  class="style-polygon-glass" на <body>
+   Отключение: убрать класс
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700&display=swap');
+
+/* ── CSS custom properties ──────────────────────────────────────────────── */
+.style-polygon-glass {
+  /* palette */
+  --pg-cyan:          rgba(0, 210, 255, 0.85);
+  --pg-cyan-glow:     rgba(0, 200, 255, 0.35);
+  --pg-cyan-faint:    rgba(0, 200, 255, 0.12);
+  --pg-glass:         rgba(5, 11, 28, 0.68);
+  --pg-glass-solid:   rgba(3,  7, 20, 0.92);
+  --pg-border:        rgba(0, 200, 255, 0.22);
+  --pg-border-bright: rgba(0, 215, 255, 0.70);
+  --pg-text:          #d4eeff;
+  --pg-muted:         rgba(110, 175, 215, 0.82);
+  --pg-blur:          12px;
+  --pg-trans:         0.26s cubic-bezier(0.22, 0.8, 0.32, 1);
+
+  /* clip-paths */
+  --pg-clip-btn:   polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+  --pg-clip-card:  polygon(0% 0%, 95% 0%, 100% 10%, 100% 90%, 95% 100%, 0% 100%, 0% 10%);
+  --pg-clip-soft:  polygon(5%  0%, 100% 0%, 95% 100%, 0% 100%);
+
+  /* dark body fallback when canvas is unavailable */
+  background-color: #05080e;
+}
+
+/* ── Re-map shared CSS tokens so CSS-var-based components auto-theme ──── */
+.style-polygon-glass .app,
+.style-polygon-glass .app.dark,
+.style-polygon-glass .app.light {
+  --bg:     transparent;
+  --bg2:    rgba(5, 11, 28, 0.72);
+  --bg3:    rgba(3,  7, 20, 0.60);
+  --border: rgba(0, 200, 255, 0.20);
+  --text:   #d4eeff;
+  --muted:  rgba(110, 175, 215, 0.82);
+  --green:  #00ff90;
+  --red:    #ff5040;
+  --blue:   #00c8ff;
+  --yellow: #ffc000;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+  --trans:  .26s ease;
+  --radius: 3px;
+}
+
+/* make #root transparent so canvas shows through */
+.style-polygon-glass,
+.style-polygon-glass #root {
+  background: transparent !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   LAYOUT
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass .app {
+  background: transparent !important;
+  color: var(--pg-text) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   SIDEBAR
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass .sidebar {
+  background: var(--pg-glass) !important;
+  backdrop-filter:          blur(var(--pg-blur));
+  -webkit-backdrop-filter:  blur(var(--pg-blur));
+  border-right: 1px solid var(--pg-border) !important;
+  box-shadow:
+    0 0  28px rgba(0, 200, 255, 0.06),
+    4px 0 40px rgba(0, 0,   0,   0.55) !important;
+  position: relative;
+}
+
+/* glowing right edge */
+.style-polygon-glass .sidebar::before {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0; right: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 210, 255, 0.45) 20%,
+    rgba(0, 220, 255, 0.90) 50%,
+    rgba(0, 210, 255, 0.45) 80%,
+    transparent 100%
+  );
+  filter: drop-shadow(0 0 3px rgba(0, 200, 255, 0.6));
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* glowing top edge */
+.style-polygon-glass .sidebar::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 200, 255, 0.40) 20%,
+    rgba(0, 220, 255, 0.85) 50%,
+    rgba(0, 200, 255, 0.40) 80%,
+    transparent 100%
+  );
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* ── Sidebar header ─────────────────────────────────────────────────────── */
+.style-polygon-glass .sidebar-header {
+  background: linear-gradient(
+    120deg,
+    rgba(0,  90, 200, 0.14) 0%,
+    rgba(0, 200, 255, 0.04) 100%
+  ) !important;
+  border-bottom: 1px solid var(--pg-border) !important;
+}
+
+/* ── Logo ────────────────────────────────────────────────────────────────── */
+.style-polygon-glass .logo-icon {
+  filter: drop-shadow(0 0 10px rgba(0, 200, 255, 0.75));
+}
+
+.style-polygon-glass .logo-title {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background: linear-gradient(110deg, #00d4ff 10%, #1e6fff 60%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.style-polygon-glass .logo-sub {
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: 0.04em;
+  color: var(--pg-muted) !important;
+}
+
+/* ── Section labels ──────────────────────────────────────────────────────── */
+.style-polygon-glass .section-label {
+  font-family: 'Inter', sans-serif !important;
+  letter-spacing: 0.09em;
+  color: var(--pg-muted) !important;
+  text-transform: uppercase;
+  font-size: 11px !important;
+}
+
+/* ── Theme toggle ────────────────────────────────────────────────────────── */
+.style-polygon-glass .theme-toggle {
+  background: var(--pg-glass) !important;
+  border: 1px solid var(--pg-border) !important;
+  color: var(--pg-text) !important;
+  clip-path: var(--pg-clip-soft);
+  box-shadow: 0 0 12px rgba(0, 200, 255, 0.10) !important;
+  transition: var(--pg-trans) !important;
+}
+.style-polygon-glass .theme-toggle:hover {
+  border-color: var(--pg-border-bright) !important;
+  box-shadow: 0 0 22px rgba(0, 200, 255, 0.30) !important;
+  transform: skew(-1.5deg);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PROFILE BUTTONS
+   gap: 22px gives clipped parallelograms room to breathe — no "пельмени"
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass .profile-grid {
+  gap: 22px !important;
+  padding: 0 4px;
+}
+
+.style-polygon-glass .profile-btn {
+  background:
+    linear-gradient(116deg, rgba(0, 175, 255, 0.09) 0%, transparent 55%),
+    linear-gradient(244deg, rgba(20,  80, 255, 0.07) 0%, transparent 55%),
+    var(--pg-glass) !important;
+  backdrop-filter:          blur(var(--pg-blur));
+  -webkit-backdrop-filter:  blur(var(--pg-blur));
+  border:        none !important;
+  border-radius: 0    !important;
+  clip-path: var(--pg-clip-btn);
+  box-shadow:
+    0 0 0 1px var(--pg-border),
+    0 0 14px rgba(0, 200, 255, 0.06) !important;
+  color: var(--pg-text) !important;
+  font-family: 'Inter', sans-serif !important;
+  transition: var(--pg-trans) !important;
+  position: relative;
+  min-height: 84px;
+}
+
+/* inner glass highlight */
+.style-polygon-glass .profile-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    130deg,
+    rgba(0, 220, 255, 0.10) 0%,
+    transparent 50%
+  );
+  clip-path: inherit;
+  pointer-events: none;
+}
+
+.style-polygon-glass .profile-btn:hover {
+  background:
+    linear-gradient(116deg, rgba(0, 210, 255, 0.17) 0%, transparent 55%),
+    rgba(3, 11, 36, 0.82) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 210, 255, 0.58),
+    0 0 24px rgba(0, 200, 255, 0.28),
+    0 6px 30px rgba(0, 0, 0, 0.40) !important;
+  transform: skew(-1deg) translateY(-3px);
+}
+
+.style-polygon-glass .profile-btn.active {
+  background:
+    linear-gradient(116deg, rgba(0, 220, 255, 0.24) 0%, transparent 55%),
+    rgba(0, 26, 62, 0.85) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 220, 255, 0.72),
+    0 0 28px rgba(0, 200, 255, 0.32) !important;
+}
+
+.style-polygon-glass .p-name {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600;
+  color: var(--pg-text) !important;
+}
+
+.style-polygon-glass .p-desc {
+  font-size: 11px;
+  color: var(--pg-muted) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   INPUTS  (rectangular — usability > aesthetics here)
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass .input-group {
+  gap: 12px !important;
+}
+
+.style-polygon-glass .input-wrap {
+  background:
+    linear-gradient(116deg, rgba(0, 175, 255, 0.06) 0%, transparent 50%),
+    rgba(3, 8, 24, 0.74) !important;
+  backdrop-filter:          blur(var(--pg-blur));
+  -webkit-backdrop-filter:  blur(var(--pg-blur));
+  border:        1px solid var(--pg-border) !important;
+  border-radius: 3px !important;
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.04) !important;
+  transition: var(--pg-trans) !important;
+}
+
+.style-polygon-glass .input-wrap:focus-within {
+  border-color: rgba(0, 215, 255, 0.62) !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 210, 255, 0.18),
+    0 0 18px rgba(0, 200, 255, 0.14) !important;
+}
+
+.style-polygon-glass .input-wrap input {
+  background: transparent !important;
+  color: var(--pg-text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px;
+}
+
+.style-polygon-glass .input-wrap input::placeholder {
+  color: var(--pg-muted) !important;
+}
+
+/* ── Swap button ─────────────────────────────────────────────────────────── */
+.style-polygon-glass .btn-swap {
+  background:
+    linear-gradient(116deg, rgba(0, 175, 255, 0.08) 0%, transparent 50%),
+    var(--pg-glass) !important;
+  border:        1px solid var(--pg-border) !important;
+  border-radius: 0 !important;
+  color:         var(--pg-muted) !important;
+  clip-path: var(--pg-clip-soft);
+  font-family: 'Inter', sans-serif !important;
+  /* horizontal padding compensates for diagonal clip overhang */
+  padding-left:  28px !important;
+  padding-right: 28px !important;
+  box-shadow: 0 0 8px rgba(0, 200, 255, 0.05) !important;
+  transition: var(--pg-trans) !important;
+}
+.style-polygon-glass .btn-swap:hover {
+  color:        var(--pg-text) !important;
+  border-color: rgba(0, 200, 255, 0.52) !important;
+  box-shadow:   0 0 18px rgba(0, 200, 255, 0.20) !important;
+  transform: skew(-1deg);
+}
+
+/* ── Mic button ──────────────────────────────────────────────────────────── */
+.style-polygon-glass .btn-mic {
+  color: var(--pg-muted) !important;
+  transition: var(--pg-trans) !important;
+}
+.style-polygon-glass .btn-mic:hover {
+  background: rgba(0, 200, 255, 0.10) !important;
+  color: var(--pg-text) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MAIN CTA BUTTON  — full-width parallelogram
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass .btn-main {
+  background:
+    linear-gradient(116deg,
+      rgba(0, 215, 255, 0.28) 0%,
+      rgba(20, 80, 255, 0.22) 100%
+    ),
+    rgba(3, 9, 28, 0.84) !important;
+  border:        none !important;
+  border-radius: 0    !important;
+  clip-path: var(--pg-clip-soft);
+  color: #fff !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  /* left/right padding absorbs clip-path overhang */
+  padding-left:  26px !important;
+  padding-right: 26px !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 200, 255, 0.42),
+    0 0 22px rgba(0, 200, 255, 0.18),
+    0 6px 24px rgba(0, 0, 0, 0.45) !important;
+  transition: var(--pg-trans) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* inner glass facet highlight */
+.style-polygon-glass .btn-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    116deg,
+    rgba(0, 230, 255, 0.20) 0%,
+    transparent 42%
+  );
+  pointer-events: none;
+}
+
+.style-polygon-glass .btn-main:hover:not(:disabled) {
+  box-shadow:
+    0 0 0 1px rgba(0, 220, 255, 0.76),
+    0 0 36px rgba(0, 200, 255, 0.38),
+    0 0 72px rgba(0, 200, 255, 0.12) !important;
+  transform: skew(-1.5deg) translateY(-2px);
+}
+
+.style-polygon-glass .btn-main:disabled { opacity: 0.38; }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ROUTE INFO CARD  — clipped card polygon
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass .route-info {
+  background:
+    linear-gradient(116deg, rgba(0, 150, 255, 0.09) 0%, transparent 55%),
+    linear-gradient(296deg, rgba(20,  60, 255, 0.07) 0%, transparent 55%),
+    var(--pg-glass) !important;
+  backdrop-filter:          blur(var(--pg-blur));
+  -webkit-backdrop-filter:  blur(var(--pg-blur));
+  border:        none !important;
+  border-radius: 0    !important;
+  clip-path: var(--pg-clip-card);
+  box-shadow:
+    0 0 0 1px var(--pg-border),
+    0 0 24px rgba(0, 200, 255, 0.08) !important;
+}
+
+.style-polygon-glass .route-stats { gap: 10px !important; }
+
+.style-polygon-glass .stat {
+  background: rgba(0, 18, 46, 0.58) !important;
+  border: 1px solid var(--pg-border) !important;
+  border-radius: 3px !important;
+}
+
+.style-polygon-glass .stat-val {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700;
+  background: linear-gradient(115deg, #00d4ff 20%, #1e7fff 80%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.style-polygon-glass .stat-lbl {
+  color: var(--pg-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px;
+}
+
+.style-polygon-glass .access-bar-track {
+  background: rgba(0, 28, 58, 0.60) !important;
+  border: 1px solid var(--pg-border);
+}
+
+.style-polygon-glass .access-bar-label {
+  color: var(--pg-text) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Suggestions dropdown ────────────────────────────────────────────────── */
+.style-polygon-glass .suggestions {
+  background: rgba(3, 7, 22, 0.96) !important;
+  backdrop-filter:          blur(18px);
+  -webkit-backdrop-filter:  blur(18px);
+  border: 1px solid var(--pg-border) !important;
+  border-radius: 4px !important;
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.62),
+    0 0  18px rgba(0, 200, 255, 0.07) !important;
+}
+
+.style-polygon-glass .suggestion-item {
+  border-bottom-color: var(--pg-border) !important;
+  transition: var(--pg-trans) !important;
+}
+
+.style-polygon-glass .suggestion-item:hover {
+  background: rgba(0, 200, 255, 0.07) !important;
+}
+
+.style-polygon-glass .suggestion-text {
+  color: var(--pg-text) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── Error message ───────────────────────────────────────────────────────── */
+.style-polygon-glass .error-msg {
+  background: rgba(200, 18, 8, 0.12) !important;
+  border-color: rgba(255, 65, 48, 0.44) !important;
+  color: #ff7060 !important;
+  font-family: 'Inter', sans-serif !important;
+  border-radius: 3px !important;
+}
+
+/* ── Menu toggle ─────────────────────────────────────────────────────────── */
+.style-polygon-glass .menu-toggle {
+  background: var(--pg-glass) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--pg-border) !important;
+  color: var(--pg-text) !important;
+  clip-path: var(--pg-clip-soft);
+  box-shadow: 0 0 16px rgba(0, 200, 255, 0.10) !important;
+  transition: var(--pg-trans) !important;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────────── */
+.style-polygon-glass .sidebar-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 200, 255, 0.22) !important;
+}
+
+/* ── Focus visible (accessibility) ──────────────────────────────────────── */
+.style-polygon-glass :focus-visible {
+  outline: 1px solid rgba(0, 212, 255, 0.80) !important;
+  outline-offset: 3px;
+  box-shadow: 0 0 10px rgba(0, 200, 255, 0.28) !important;
+}
+
+/* ── Leaflet barrier popup ───────────────────────────────────────────────── */
+.style-polygon-glass .barrier-popup-wrap .leaflet-popup-content-wrapper {
+  background: rgba(3, 7, 22, 0.96) !important;
+  border-color: var(--pg-border) !important;
+  backdrop-filter: blur(14px);
+  color: var(--pg-text) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   AUTH PAGE  (targets auth-* classNames on AuthPage.tsx elements)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* let canvas show through the overlay */
+.style-polygon-glass .auth-overlay {
+  background: rgba(5, 8, 18, 0.50) !important;
+}
+
+/* auth card */
+.style-polygon-glass .auth-card {
+  background:
+    linear-gradient(116deg, rgba(0, 150, 255, 0.13) 0%, transparent 45%),
+    linear-gradient(296deg, rgba(20,  60, 255, 0.08) 0%, transparent 45%),
+    rgba(4, 10, 30, 0.86) !important;
+  backdrop-filter:          blur(20px);
+  -webkit-backdrop-filter:  blur(20px);
+  border:        none !important;
+  border-radius: 0 !important;
+  clip-path: var(--pg-clip-card);
+  box-shadow:
+    0 0 0 1px rgba(0, 200, 255, 0.30),
+    0 0 50px rgba(0, 200, 255, 0.10),
+    0 24px 64px rgba(0, 0, 0, 0.65) !important;
+  position: relative;
+}
+
+/* top glow edge on auth card */
+.style-polygon-glass .auth-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 200, 255, 0.75) 50%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+.style-polygon-glass .auth-card::after { display: none; }
+
+.style-polygon-glass .auth-logo-icon {
+  filter: drop-shadow(0 0 12px rgba(0, 200, 255, 0.75));
+}
+
+.style-polygon-glass .auth-logo-title {
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 700;
+  background: linear-gradient(110deg, #00d4ff 10%, #1e6fff 60%, #00d4ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.style-polygon-glass .auth-logo-sub {
+  color: var(--pg-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* tabs */
+.style-polygon-glass .auth-tabs {
+  background: rgba(0, 12, 34, 0.72) !important;
+  border: 1px solid var(--pg-border) !important;
+  border-radius: 4px !important;
+}
+
+.style-polygon-glass .auth-tab {
+  color: var(--pg-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  border-radius: 2px !important;
+  transition: var(--pg-trans) !important;
+}
+
+.style-polygon-glass .auth-tab-active {
+  background: linear-gradient(
+    116deg,
+    rgba(0, 200, 255, 0.28) 0%,
+    rgba(20, 80, 255, 0.20) 100%
+  ) !important;
+  color: #00d4ff !important;
+  box-shadow: 0 0 14px rgba(0, 200, 255, 0.25) !important;
+}
+
+/* fields */
+.style-polygon-glass .auth-field-label {
+  color: var(--pg-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 11px !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.style-polygon-glass .auth-input {
+  background: rgba(2, 5, 18, 0.82) !important;
+  border: 1px solid var(--pg-border) !important;
+  border-radius: 3px !important;
+  color: var(--pg-text) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  outline: none !important;
+  transition: var(--pg-trans) !important;
+  padding: 12px 14px;
+  width: 100%;
+}
+
+.style-polygon-glass .auth-input:focus {
+  border-color: rgba(0, 215, 255, 0.65) !important;
+  background: rgba(0, 13, 40, 0.90) !important;
+  box-shadow:
+    0 0 0 2px rgba(0, 200, 255, 0.10),
+    0 0 18px rgba(0, 200, 255, 0.10) !important;
+}
+
+.style-polygon-glass .auth-input::placeholder {
+  color: rgba(80, 140, 185, 0.56) !important;
+}
+
+.style-polygon-glass .auth-label {
+  color: var(--pg-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 12px !important;
+}
+
+/* role / profile buttons — give row extra gap so clips don't crowd */
+.style-polygon-glass .auth-role-btn {
+  background:
+    linear-gradient(116deg, rgba(0, 175, 255, 0.07), transparent),
+    rgba(3, 9, 26, 0.76) !important;
+  border: 1px solid var(--pg-border) !important;
+  color: var(--pg-text) !important;
+  border-radius: 0 !important;
+  clip-path: var(--pg-clip-soft);
+  transition: var(--pg-trans) !important;
+  flex: 1;
+  /* inner gap to avoid clips touching each other */
+  margin: 0 3px;
+}
+
+.style-polygon-glass .auth-role-btn-active {
+  background:
+    linear-gradient(116deg, rgba(0, 210, 255, 0.22), transparent),
+    rgba(0, 20, 54, 0.86) !important;
+  border-color: rgba(0, 210, 255, 0.66) !important;
+  box-shadow: 0 0 18px rgba(0, 200, 255, 0.28) !important;
+  color: #00d4ff !important;
+}
+
+.style-polygon-glass .auth-profile-btn {
+  background:
+    linear-gradient(116deg, rgba(0, 175, 255, 0.07), transparent),
+    rgba(3, 9, 26, 0.76) !important;
+  border: 1px solid var(--pg-border) !important;
+  color: var(--pg-text) !important;
+  border-radius: 0 !important;
+  clip-path: var(--pg-clip-soft);
+  transition: var(--pg-trans) !important;
+}
+
+.style-polygon-glass .auth-profile-btn-active {
+  background:
+    linear-gradient(116deg, rgba(0, 210, 255, 0.20), transparent),
+    rgba(0, 20, 54, 0.86) !important;
+  border-color: rgba(0, 210, 255, 0.62) !important;
+  box-shadow: 0 0 14px rgba(0, 200, 255, 0.22) !important;
+}
+
+/* error */
+.style-polygon-glass .auth-error {
+  background: rgba(200, 18, 8, 0.12) !important;
+  color: #ff7060 !important;
+  border-radius: 3px;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  padding: 10px 14px !important;
+}
+
+/* submit */
+.style-polygon-glass .auth-submit-btn {
+  background:
+    linear-gradient(116deg,
+      rgba(0, 220, 255, 0.32) 0%,
+      rgba(20, 85, 255, 0.25) 100%
+    ),
+    rgba(3, 9, 28, 0.85) !important;
+  border:        none !important;
+  border-radius: 0    !important;
+  clip-path: var(--pg-clip-soft);
+  color: #fff !important;
+  font-family: 'Montserrat', sans-serif !important;
+  font-weight: 600;
+  font-size: 15px !important;
+  letter-spacing: 0.06em;
+  padding: 14px 28px !important;
+  margin-top: 4px;
+  box-shadow:
+    0 0 0 1px rgba(0, 200, 255, 0.45),
+    0 0 24px rgba(0, 200, 255, 0.22) !important;
+  transition: var(--pg-trans) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.style-polygon-glass .auth-submit-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    116deg,
+    rgba(0, 230, 255, 0.18) 0%,
+    transparent 44%
+  );
+  pointer-events: none;
+}
+
+.style-polygon-glass .auth-submit-btn:hover:not(:disabled) {
+  box-shadow:
+    0 0 0 1px rgba(0, 220, 255, 0.82),
+    0 0 34px rgba(0, 200, 255, 0.42),
+    0 0 70px rgba(0, 200, 255, 0.14) !important;
+  transform: skew(-1.5deg) translateY(-1px);
+}
+
+.style-polygon-glass .auth-hint {
+  color: var(--pg-muted) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 13px !important;
+  text-align: center;
+  margin-top: 16px;
+}
+
+.style-polygon-glass .auth-link {
+  color: #00c8ff !important;
+  text-shadow: 0 0 8px rgba(0, 200, 255, 0.42);
+  cursor: pointer;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   MOBILE — bottom sheet
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .style-polygon-glass {
+    --pg-blur:      8px;
+    --pg-clip-btn:  polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+    --pg-clip-card: polygon(0% 0%, 97% 0%, 100% 5%, 100% 95%, 97% 100%, 0% 100%, 0% 5%);
+    --pg-clip-soft: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%);
+  }
+
+  .style-polygon-glass .sidebar {
+    background: rgba(3, 7, 20, 0.96) !important;
+    border-top: 1px solid var(--pg-border) !important;
+    box-shadow: 0 -6px 40px rgba(0, 0, 0, 0.72) !important;
+  }
+
+  /* hide pilaster on mobile */
+  .style-polygon-glass .sidebar::before { display: none; }
+
+  /* no hover lifts on touch devices */
+  .style-polygon-glass .profile-btn:hover,
+  .style-polygon-glass .btn-main:hover:not(:disabled),
+  .style-polygon-glass .btn-swap:hover,
+  .style-polygon-glass .auth-submit-btn:hover:not(:disabled) {
+    transform: none;
+    box-shadow:
+      0 0 0 1px rgba(0, 200, 255, 0.42),
+      0 0 12px rgba(0, 200, 255, 0.16) !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FALLBACK — no clip-path support → rounded glass
+   ══════════════════════════════════════════════════════════════════════════ */
+@supports not (clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%)) {
+  .style-polygon-glass .profile-btn,
+  .style-polygon-glass .btn-main,
+  .style-polygon-glass .btn-swap,
+  .style-polygon-glass .theme-toggle,
+  .style-polygon-glass .auth-card,
+  .style-polygon-glass .auth-submit-btn,
+  .style-polygon-glass .auth-role-btn,
+  .style-polygon-glass .auth-profile-btn,
+  .style-polygon-glass .route-info {
+    clip-path:     none !important;
+    border-radius: 8px  !important;
+    border: 1px solid var(--pg-border) !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   CANVAS FALLBACK — no canvas → static dark gradient
+   ══════════════════════════════════════════════════════════════════════════ */
+.style-polygon-glass:not(:has(#pg-canvas)) .app {
+  background: linear-gradient(135deg, #05080e 0%, #0a1328 50%, #05080e 100%) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   REDUCED MOTION — hide canvas, disable animation
+   ══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .style-polygon-glass #pg-canvas { display: none; }
+  .style-polygon-glass .app       { background: #080d1a !important; }
+}

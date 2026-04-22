@@ -49,24 +49,28 @@ export default function AuthPage() {
   }
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.card}>
+    <div className="auth-overlay" style={styles.overlay}>
+      <div className="auth-card" style={styles.card}>
         {/* Логотип */}
         <div style={styles.logo}>
-          <span style={styles.logoIcon}>♿</span>
+          <span className="auth-logo-icon" style={styles.logoIcon}>♿</span>
           <div>
-            <div style={styles.logoTitle}>Доступный город</div>
-            <div style={styles.logoSub}>Навигатор для всех</div>
+            <div className="auth-logo-title" style={styles.logoTitle}>Доступный город</div>
+            <div className="auth-logo-sub" style={styles.logoSub}>Навигатор для всех</div>
           </div>
         </div>
 
         {/* Табы */}
-        <div style={styles.tabs}>
-          <button style={{ ...styles.tab, ...(tab === 'login' ? styles.tabActive : {}) }}
+        <div className="auth-tabs" style={styles.tabs}>
+          <button
+            className={`auth-tab${tab === 'login' ? ' auth-tab-active' : ''}`}
+            style={{ ...styles.tab, ...(tab === 'login' ? styles.tabActive : {}) }}
             onClick={() => { setTab('login'); setError('') }}>
             Вход
           </button>
-          <button style={{ ...styles.tab, ...(tab === 'register' ? styles.tabActive : {}) }}
+          <button
+            className={`auth-tab${tab === 'register' ? ' auth-tab-active' : ''}`}
+            style={{ ...styles.tab, ...(tab === 'register' ? styles.tabActive : {}) }}
             onClick={() => { setTab('register'); setError('') }}>
             Регистрация
           </button>
@@ -75,34 +79,35 @@ export default function AuthPage() {
         <form onSubmit={submit} style={styles.form}>
           {tab === 'register' && (
             <label style={styles.fieldWrap}>
-              <span style={styles.fieldLabel}>Ваше имя</span>
-              <input style={styles.input} type="text" placeholder="Иван Иванов"
+              <span className="auth-field-label" style={styles.fieldLabel}>Ваше имя</span>
+              <input className="auth-input" style={styles.input} type="text" placeholder="Иван Иванов"
                 value={name} onChange={e => setName(e.target.value)} required />
             </label>
           )}
 
           <label style={styles.fieldWrap}>
-            <span style={styles.fieldLabel}>Email</span>
-            <input style={styles.input} type="email" placeholder="example@mail.ru"
+            <span className="auth-field-label" style={styles.fieldLabel}>Email</span>
+            <input className="auth-input" style={styles.input} type="email" placeholder="example@mail.ru"
               value={email} onChange={e => setEmail(e.target.value)} required />
           </label>
 
           <label style={styles.fieldWrap}>
-            <span style={styles.fieldLabel}>Пароль</span>
-            <input style={styles.input} type="password" placeholder="Минимум 8 символов"
+            <span className="auth-field-label" style={styles.fieldLabel}>Пароль</span>
+            <input className="auth-input" style={styles.input} type="password" placeholder="Минимум 8 символов"
               value={password} onChange={e => setPassword(e.target.value)} required />
           </label>
 
           {tab === 'register' && (
             <>
               {/* Выбор роли */}
-              <div style={styles.label}>Я являюсь:</div>
+              <div className="auth-label" style={styles.label}>Я являюсь:</div>
               <div style={styles.roleRow}>
                 {([
                   { v: 'user',      icon: '🧑', label: 'Маломобильный\nгражданин' },
                   { v: 'volunteer', icon: '🤝', label: 'Волонтёр' },
                 ] as const).map(r => (
                   <button key={r.v} type="button"
+                    className={`auth-role-btn${role === r.v ? ' auth-role-btn-active' : ''}`}
                     style={{ ...styles.roleBtn, ...(role === r.v ? styles.roleBtnActive : {}) }}
                     onClick={() => setRole(r.v)}>
                     <span style={{ fontSize: 24 }}>{r.icon}</span>
@@ -114,10 +119,11 @@ export default function AuthPage() {
               {/* Категория маломобильности — только для user */}
               {role === 'user' && (
                 <>
-                  <div style={styles.label}>Категория маломобильности:</div>
+                  <div className="auth-label" style={styles.label}>Категория маломобильности:</div>
                   <div style={styles.profileGrid}>
                     {PROFILES.map(p => (
                       <button key={p.value} type="button"
+                        className={`auth-profile-btn${profileType === p.value ? ' auth-profile-btn-active' : ''}`}
                         style={{ ...styles.profileBtn, ...(profileType === p.value ? styles.profileBtnActive : {}) }}
                         onClick={() => setProfileType(p.value)}>
                         <span style={{ fontSize: 22 }}>{p.icon}</span>
@@ -131,18 +137,20 @@ export default function AuthPage() {
             </>
           )}
 
-          {error && <div style={styles.error}>{error}</div>}
+          {error && <div className="auth-error" style={styles.error}>{error}</div>}
 
-          <button style={{ ...styles.submitBtn, opacity: loading ? 0.6 : 1 }}
+          <button
+            className="auth-submit-btn"
+            style={{ ...styles.submitBtn, opacity: loading ? 0.6 : 1 }}
             type="submit" disabled={loading}>
             {loading ? 'Загрузка...' : tab === 'login' ? 'Войти' : 'Зарегистрироваться'}
           </button>
         </form>
 
         {tab === 'login' && (
-          <div style={styles.hint}>
+          <div className="auth-hint" style={styles.hint}>
             Нет аккаунта?{' '}
-            <span style={styles.link} onClick={() => setTab('register')}>Зарегистрироваться</span>
+            <span className="auth-link" style={styles.link} onClick={() => setTab('register')}>Зарегистрироваться</span>
           </div>
         )}
       </div>

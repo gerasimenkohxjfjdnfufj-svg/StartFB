@@ -38,3 +38,4 @@ logs/
 *.sqlite
 postgres_data/
 redis_data/
+.gstack/
