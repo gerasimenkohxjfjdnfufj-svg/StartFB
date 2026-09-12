@@ -1,7 +1,9 @@
 <div align="center">
 
+
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=220&section=header&text=Доступный%20город&fontSize=56&fontColor=ffffff&animation=fadeIn&fontAlignY=38&desc=Навигация%20без%20барьеров&descAlignY=58&descSize=20&descColor=b8e8ce" width="100%"/>
 
+</div>
 </div>
 <details>
 <summary>📑 <b>Навигация по разделам</b> (нажмите, чтобы раскрыть)</summary>
